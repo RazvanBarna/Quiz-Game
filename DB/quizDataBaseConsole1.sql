@@ -73,6 +73,6 @@ CREATE TABLE IF NOT EXISTS WrongAnswers(
     FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
 );
 
-select * from difficulty;
+select * from category;
 
 
