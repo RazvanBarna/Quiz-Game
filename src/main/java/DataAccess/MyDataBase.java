@@ -123,10 +123,51 @@ public class MyDataBase {
         }
     }
 
-    public static void main(String[] argv){
-        MyDataBase myDataBase = new MyDataBase();
-        Connection connection = myDataBase.connectToMyDb();
-        APIConnection apiConnection = new APIConnection();
-        myDataBase.insertAllCategories(connection,apiConnection);
+    public List<Question> getRandomQuestions(int count) {
+        List<Question> questions = new ArrayList<>();
+        String sql = "SELECT q.QuestionID, q.QuestionTitle, q.TypeID, q.DifficultyID, q.CategoryID, ca.CorrectAnswerName, " +
+                "t.TypeName, d.DifficultyName, c.CategoryName " +
+                "FROM Question q " +
+                "JOIN Type t ON q.TypeID = t.TypeID " +
+                "JOIN Difficulty d ON q.DifficultyID = d.DifficultyID " +
+                "JOIN Category c ON q.CategoryID = c.CategoryID " +
+                "JOIN CorrectAnswers ca ON q.CorrectAnswerID = ca.CorrectAnswerID " +
+                "ORDER BY RAND() LIMIT ?";
+        try (Connection conn = connectToMyDb();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, count);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int questionId = rs.getInt("QuestionID");
+                String questionTitle = rs.getString("QuestionTitle");
+                String correctAnswer = rs.getString("CorrectAnswerName");
+                String type = rs.getString("TypeName");
+                String difficulty = rs.getString("DifficultyName");
+                String category = rs.getString("CategoryName");
+
+                // get wrong answers
+                List<String> wrongAnswers = new ArrayList<>();
+                String wrongSql = "SELECT WrongAnswerName FROM WrongAnswers WHERE QuestionID = ?";
+                try (PreparedStatement wrongStmt = conn.prepareStatement(wrongSql)) {
+                    wrongStmt.setInt(1, questionId);
+                    ResultSet wrongRs = wrongStmt.executeQuery();
+                    while (wrongRs.next()) {
+                        wrongAnswers.add(wrongRs.getString("WrongAnswerName"));
+                    }
+                }
+
+                Question question = new Question(questionId, type, difficulty, category, questionTitle, correctAnswer, wrongAnswers);
+                questions.add(question);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error fetching random questions");
+        }
+
+        return questions;
     }
+
 }

@@ -1,0 +1,74 @@
+/* Stil pentru întreaga fereastră */
+.root {
+    -fx-background-color: #f4f4f9; /* Un fundal ușor gri deschis */
+    -fx-font-family: "Arial", sans-serif;
+    -fx-padding: 20px;
+}
+
+/* Stil pentru titlul întrebării */
+.label-question {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2196F3; /* Font albastru pentru întrebare */
+    -fx-margin-bottom: 20px;
+}
+
+/* Stil pentru opțiunile de răspuns */
+.radio-button {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}
+
+.radio-button:selected {
+    -fx-background-color: #e0e0e0; /* Culoare de fundal când este selectat */
+}
+
+/* Stil pentru butonul de trimite */
+.button {
+    -fx-font-size: 16px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #45a049;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* Stil pentru eticheta feedback-ului (corect/greșit) */
+.feedback-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-margin-top: 10px;
+}
+
+/* Stil pentru scorul utilizatorului */
+.score-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+    -fx-margin-bottom: 20px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #e8f5e9;
+    -fx-padding: 10px;
+}
+
+/* Stil pentru scorul final */
+.final-score-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2196F3; /* Font albastru pentru scorul final */
+    -fx-text-align: center;
+    -fx-padding: 20px;
+    -fx-background-color: #f1f8e9;
+    -fx-border-radius: 10px;
+}
