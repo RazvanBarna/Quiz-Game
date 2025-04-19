@@ -18,7 +18,7 @@ import java.util.Queue;
 
 public class APIConnection {
 
-    public  void getQuestions(int categoryID) {
+    public  List<Question> getQuestions(int categoryID) {
         try {
             StringBuilder stringBuilder = readLinesFromAPi(categoryID);
             JsonParser parser = new JsonParser();
@@ -26,17 +26,16 @@ public class APIConnection {
             JsonObject jsonObject = new JsonObject();
             if(readL instanceof JsonObject){
                 jsonObject = (JsonObject) readL;
-                int code = Integer.parseInt(jsonObject.get("response_code").toString());
-                System.out.println(code);
+                int code = Integer.parseInt(jsonObject.get("response_code").toString()); // dont need this
                 JsonArray questionsArray = (JsonArray) jsonObject.get("results");
-                parseObjectsFromArray(questionsArray);
+                List<Question> questions = parseObjectsFromArray(questionsArray);
+                return questions;
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("API Problem");
         }
+        return null;
     }
 
     private  StringBuilder readLinesFromAPi(int categoryID) throws Exception{
@@ -53,22 +52,28 @@ public class APIConnection {
         return stringBuilder;
     }
 
-    private  List<Question> parseObjectsFromArray(JsonArray array){
+    private List<Question> parseObjectsFromArray(JsonArray array) {
         List<Question> questions = new ArrayList<>();
-        for(JsonElement element : array){
-            if(element instanceof JsonObject){
-                String type = String.valueOf(((JsonObject) element).get("type"));
-                String difficulty = String.valueOf(((JsonObject) element).get("difficulty"));
-                String category = String.valueOf(((JsonObject) element).get("category"));
-                String question = String.valueOf(((JsonObject) element).get("question"));
-                String correctAnswer = String.valueOf(((JsonObject) element).get("correct_answer"));
+        for (JsonElement element : array) {
+            if (element instanceof JsonObject) {
+                JsonObject obj = (JsonObject) element;
+
+                String type = obj.get("type").getAsString();
+                String difficulty = obj.get("difficulty").getAsString();
+                String category = obj.get("category").getAsString();
+                String questionText = obj.get("question").getAsString();
+                String correctAnswer = obj.get("correct_answer").getAsString();
+
                 List<String> wrongAnswers = new ArrayList<>();
-                JsonArray arrayOfWrong = (JsonArray) ((JsonObject) element).get("incorrect_answers");
-                for (JsonElement jsonElement : arrayOfWrong) {
-                    String wrong = jsonElement.getAsString();
-                    wrongAnswers.add(wrong);
+                JsonArray arrayOfWrong = obj.get("incorrect_answers").getAsJsonArray();
+                for (JsonElement wrongEl : arrayOfWrong) {
+                    wrongAnswers.add(wrongEl.getAsString());
                 }
+
+                Question q = new Question(0, type, difficulty, category, questionText, correctAnswer, wrongAnswers);
+                questions.add(q);
             }
         }
+        return questions;
     }
 }
